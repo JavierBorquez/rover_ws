@@ -2,7 +2,6 @@ import pygame
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_msgs.msg import String
 
 
 class GamepadLabroverPublisher(Node):
@@ -14,13 +13,12 @@ class GamepadLabroverPublisher(Node):
         self.joystick = pygame.joystick.Joystick(0)
         self.joystick.init()
         self.timer = self.create_timer(0.1, self.timer_callback)  # Check for input every 0.1 seconds
-        self.mode = 0
+        self.mode = 3
         self.n_modes = 4
 
     def timer_callback(self):
         pygame.event.pump()
         left_x = self.joystick.get_axis(0)
-        #left_y = self.joystick.get_axis(1)
         right_y= self.joystick.get_axis(4)
         button_square = self.joystick.get_button(3)
 
@@ -41,7 +39,6 @@ class GamepadLabroverPublisher(Node):
             vx = round(right_y * -1.8, 2)
             vy = round(left_x * -0.045, 3)
 
-
         twist = Twist()
         twist.linear.x = vx; twist.linear.y = vy; twist.linear.z = 0.0
         twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = w            
@@ -51,10 +48,8 @@ class GamepadLabroverPublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-
     gamepad_publisher = GamepadLabroverPublisher()
     rclpy.spin(gamepad_publisher)
-
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
